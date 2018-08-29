@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class='content'>
-        <canvas id="canvas" onclick='point(event)' width="400" height="400" style="background-color:#ffffff"></canvas>
+        <canvas id="canvas" width="400" height="400" style="background-color:#ffffff"></canvas>
         <br>
         <div class='text'>
             <select id='check'>
@@ -24,6 +24,8 @@
             <button id='stop'>Stop</button>
             <div id='result'></div>
             <div id='coordinate'></div>
+            <br>
+            <a href="https://github.com/dlalstn604/Minsu/blob/master/blog/templates/blog/clock.html">소스 보기</a>
         </div>
 
     </div>
@@ -33,7 +35,7 @@
         var radius = canvas.height / 2;
         var mySound = new sound("https://www.w3schools.com/graphics/gametheme.mp3");
         ctx.translate(radius, radius); //중심점을 옮긴다.
-        radius = radius * 0.90
+        radius = radius * 0.90;
         setInterval(drawClock, 1000);
         setInterval(alarm, 2000);
 
@@ -43,15 +45,15 @@
             drawTime(ctx, radius);
         }
 
-        function point(event) {
-            var str = '';
-            str = event.offsetX - 200;
-            str += ',' + (event.offsetY - 200);
-            document.getElementById('coordinate').innerHTML = str;
-            ctx.moveTo(0, 0);
-            ctx.lineTo((event.offsetX - 200) / 2, (event.offsetY - 200) / 2);
-            ctx.stroke();
-        }
+        <!--function point(event) {-->
+            <!--var str = '';-->
+            <!--str = event.offsetX - 200;-->
+            <!--str += ',' + (event.offsetY - 200);-->
+            <!--document.getElementById('coordinate').innerHTML = str;-->
+            <!--ctx.moveTo(0, 0);-->
+            <!--ctx.lineTo((event.offsetX - 200) / 2, (event.offsetY - 200) / 2);-->
+            <!--ctx.stroke();-->
+        <!--}-->
 
 
         //알람 설정
