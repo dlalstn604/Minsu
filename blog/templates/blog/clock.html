@@ -1,0 +1,193 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="description" content="[add your bin description]">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{% static 'css/clock.css' %}">
+    <title>Clock</title>
+</head>
+<body>
+    <div class='content'>
+        <canvas id="canvas" onclick='point(event)' width="400" height="400" style="background-color:#ffffff"></canvas>
+        <br>
+        <div class='text'>
+            <select id='check'>
+                <option id='op1' value="ON">ON</option>
+                <option id='op2' value="OFF">OFF</option>
+            </select>
+            <input id='num1' type="number" min="0" max="23"> :
+            <input id='num2' type="number" min="0" max="59">
+            <button id='start'>알람설정</button>
+            <button id='stop'>Stop</button>
+            <div id='result'></div>
+            <div id='coordinate'></div>
+        </div>
+
+    </div>
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var radius = canvas.height / 2;
+        var mySound = new sound("https://www.w3schools.com/graphics/gametheme.mp3");
+        ctx.translate(radius, radius); //중심점을 옮긴다.
+        radius = radius * 0.90
+        setInterval(drawClock, 1000);
+        setInterval(alarm, 2000);
+
+        function drawClock() {
+            drawFace(ctx, radius);
+            drawNumbers(ctx, radius);
+            drawTime(ctx, radius);
+        }
+
+        function point(event) {
+            var str = '';
+            str = event.offsetX - 200;
+            str += ',' + (event.offsetY - 200);
+            document.getElementById('coordinate').innerHTML = str;
+            ctx.moveTo(0, 0);
+            ctx.lineTo((event.offsetX - 200) / 2, (event.offsetY - 200) / 2);
+            ctx.stroke();
+        }
+
+
+        //알람 설정
+        var start = document.getElementById('start');
+        start.addEventListener('click', function () {
+            if (typeof (Storage) !== "undefined") {
+                if (localStorage.save) {
+                    localStorage.save = num1.value + '시 ' + num2.value + '분';
+                } else {
+                    localStorage.save = 1
+                }
+            }
+            document.getElementById("result").innerHTML =
+                '알람이 ' + localStorage.save + '으로 설정되었습니다.';
+        })
+        document.getElementById("result").innerHTML =
+            '알람이 ' + localStorage.save + '에 울립니다.';
+
+        //시간을 설정하고 값이 현재 시간과 같으면 알람
+        //stop을 누르면 1분동안 on1의 값이 off로 바뀌며 리턴;
+        function alarm() {
+            var now = new Date();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            if (num1.value == hour && num2.value == minute) {
+                if (check.value == 'ON') {
+                    mySound.play();
+                } else {
+                    mySound.stop();
+                }
+
+            }
+            var click = document.getElementById('stop');
+            click.addEventListener('click', function () {
+                document.getElementById('op1').value = "OFF";
+                if (op1.value == 'OFF') {
+                    setTimeout(function () {
+                        document.getElementById('op1').value = "ON";
+                    }, 60000);
+                }
+            })
+
+        }
+
+        function drawNumbers(ctx, radius) {
+            var ang;
+            var num;
+            ctx.font = radius * 0.15 + "px arial";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            for (num = 1; num < 13; num++) {
+                ang = num * Math.PI / 6;
+                ctx.rotate(ang);
+                ctx.translate(0, -radius * 0.85);
+                ctx.rotate(-ang);
+                ctx.fillText(num.toString(), 0, 0);
+                ctx.rotate(ang);
+                ctx.translate(0, radius * 0.85);
+                ctx.rotate(-ang);
+            }
+        }
+
+        function drawTime(ctx, radius) {
+            // var str = point.str;
+            var now = new Date();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            var second = now.getSeconds();
+            var num = localStorage.save.replace(/[^0-9]/g, " ");
+
+            hour = hour % 12;
+            hour = (hour * Math.PI / 6) +
+                (minute * Math.PI / (6 * 60)) +
+                (second * Math.PI / (360 * 60));
+            drawHand(ctx, hour, radius * 0.5, radius * 0.07, "#333");
+            //hour
+            minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+            drawHand(ctx, minute, radius * 0.8, radius * 0.07, "#333");
+            //minute
+            second = (second * Math.PI / 30);
+            drawHand(ctx, second, radius * 0.9, radius * 0.02, "#333");
+            // second
+            alarm = (Number(num.slice(0, 2)) * Math.PI / 6) + (Number(num.slice(-3, -1)) * Math.PI / (6 * 60));
+            drawHand(ctx, alarm, radius * 0.5, radius * 0.01, "red");
+
+        }
+
+        function drawHand(ctx, pos, length, width, color) {
+            ctx.beginPath();
+            ctx.lineWidth = width;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = color
+            ctx.moveTo(0, 0);
+            ctx.rotate(pos);
+            ctx.lineTo(0, -length);
+            ctx.stroke();
+            ctx.rotate(-pos);
+        }
+
+        function drawFace(ctx, radius) {
+            var grad;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#F3F2F2';
+            ctx.fill();
+            grad = ctx.createRadialGradient(0, 0, 0, 0, 0, radius * 1.05);
+            //초침, 분침, 시침, 알람침
+            grad.addColorStop(0.91, '#333');
+            grad.addColorStop(0.95, 'white');
+            grad.addColorStop(1.0, '#333');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = radius * 0.1;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(0, 0, radius * 0.1, 0, 2 * Math.PI);
+            //숫자
+            ctx.fillStyle = '#333';
+            ctx.fill();
+        }
+
+        function sound(src) {
+            this.sound = document.createElement("audio");
+            this.sound.src = src;
+            this.sound.setAttribute("preload", "auto");
+            this.sound.setAttribute("controls", "none");
+            this.sound.style.display = "none";
+            document.body.appendChild(this.sound);
+            this.play = function () {
+                this.sound.play();
+            }
+            this.stop = function () {
+                this.sound.pause();
+            }
+        }
+
+    </script>
+</body>
+
+</html>

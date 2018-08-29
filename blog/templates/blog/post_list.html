@@ -1,0 +1,42 @@
+{% load staticfiles %}<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+
+<body>
+    <div class="header">
+        Blog
+    </div>
+    <div class="menu">
+
+        <div class="content1">
+            <a href="{% url 'clock' %}">
+                <h2>시계</h2>
+            </a>
+            <img src="{% static 'image/시계이미지.png' %}" alt="">
+        </div>
+
+        <div class="content2">
+            <a href="{% url 'my_game' %}">
+                <h2>게임</h2>
+            </a>
+            <img src="{% static 'image/게임이미지.png' %}" alt="">
+        </div>
+
+        <div class="content3">
+            <a href="{% url 'image' %}">
+                <h2>이미지</h2>
+            </a>
+            <img src="{% static 'image/11번가 이미지.png' %}" alt="">
+        </div>
+
+    </div>
+</body>
+
+</html>

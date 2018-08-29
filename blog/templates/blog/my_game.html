@@ -1,0 +1,40 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="{% static 'javascript/my_game.js' %}"></script>
+    <title>Document</title>
+</head>
+<style>
+    canvas {
+        border: 1px solid #d3d3d3;
+        background-color: #f1f1f1;
+    }
+</style>
+
+<script>
+    var space = "{% static 'image/우주.png' %}"
+    var star = "{% static 'image/별.png' %}"
+    var ship = "{% static 'image/우주선.png' %}"
+    var enemy2 = "{% static 'image/적2.png' %}"
+    var stone = "{% static 'image/운석3.png' %}"
+</script>
+
+<body onload="startGame()">
+    <br>
+    <br>
+    <button onclick="replay()">재시작</button>
+    <br>
+    <br>
+    <span>좌로이동 : ←</span> |
+    <span>우로이동 : →</span> |
+    <span>미사일 발사 : Ctrl</span>
+
+</body>
+
+</html>

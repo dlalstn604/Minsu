@@ -1,0 +1,101 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/image.css' %}">
+
+    <title>Document</title>
+
+</head>
+
+<body>
+
+    <div>
+        <img src="{% static 'image/배경화면.jpg' %}" alt="">
+    </div>
+    <div>
+        <input type="file" id="getImg" accept="image/*">
+        <div class="img-zoom-container">
+            <div class='fir'>
+                <img id="myimage" src="" width="300" height="300">
+                <div id="myresult" class="img-zoom-result"></div>
+            </div>
+            <img src="{% static 'image/오른쪽.jpg' %}" alt="" style="padding-left: 100px">
+        </div>
+    </div>
+
+
+
+    <script>
+        var file = document.querySelector('#getImg');
+        file.onchange = function () {
+            var fileList = file.files;
+
+            var reader = new FileReader();
+            reader.readAsDataURL(fileList[0]);
+
+            reader.onload = function () {
+                document.querySelector('#myimage').src = reader.result;
+            };
+        };
+
+
+        function imageDetail(imgID, resultID) {
+            var img, lens, result, cx, cy;
+            img = document.getElementById(imgID);
+            result = document.getElementById(resultID);
+
+            lens = document.createElement("DIV");
+            lens.setAttribute("class", "img-zoom-lens");
+
+            img.parentElement.insertBefore(lens, img);
+
+            imageX = result.offsetWidth / lens.offsetWidth;
+            imageY = result.offsetHeight / lens.offsetHeight;
+
+            myimage.onload = function () {
+                result.style.backgroundImage = "url('" + img.src + "')";
+                result.style.backgroundSize = (img.width * imageX) + "px " + (img.height * imageY) + "px";
+            }
+
+            lens.addEventListener("mousemove", moveLens);
+            img.addEventListener("mousemove", moveLens);
+
+            function moveLens(e) {
+                var pos, x, y;
+                e.preventDefault();
+                pos = point(e);
+
+                x = pos.x - (lens.offsetWidth / 2);
+                y = pos.y - (lens.offsetHeight / 2);
+                if (x > img.width - lens.offsetWidth) { x = img.width - lens.offsetWidth; }
+                if (x < 0) { x = 0; }
+                if (y > img.height - lens.offsetHeight) { y = img.height - lens.offsetHeight; }
+                if (y < 0) { y = 0; }
+                lens.style.left = x + "px";
+                lens.style.top = y + "px";
+                result.style.backgroundPosition = "-" + (x * imageX) + "px -" + (y * imageY) + "px";
+            }
+
+            function point(e) {
+                var a, x = 0, y = 0;
+                e = e || window.event;
+                a = img.getBoundingClientRect();
+                x = e.pageX - a.left;
+                y = e.pageY - a.top;
+                x = x - window.pageXOffset;
+                y = y - window.pageYOffset;
+                return { x: x, y: y };
+            }
+        }
+
+        imageDetail("myimage", "myresult");
+    </script>
+</body>
+
+</html>
