@@ -1,5 +1,4 @@
 {% load staticfiles %}
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -32,6 +31,7 @@
 
 
     <script>
+    //이미지 파일 로드
         var file = document.querySelector('#getImg');
         file.onchange = function () {
             var fileList = file.files;
@@ -50,6 +50,7 @@
             img = document.getElementById(imgID);
             result = document.getElementById(resultID);
 
+            //랜즈 생성
             lens = document.createElement("DIV");
             lens.setAttribute("class", "img-zoom-lens");
 
