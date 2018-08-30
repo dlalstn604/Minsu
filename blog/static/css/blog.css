@@ -14,7 +14,7 @@ body {
 
 .menu {
     display: flex;
-    padding: 50px 200px 50px 150px;
+    padding: 50px 150px 50px 150px;
     justify-content: center;
 }
 
