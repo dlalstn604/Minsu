@@ -33,11 +33,12 @@
 .story {
     position: absolute;
     top: 600px;
+    margin-bottom: 100px;
     border: 1px solid #d4d4d4;
     width: 500px;
     }
 
 .story > p {
-    margin-top: 3px;
-    margin-bottom: 3px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

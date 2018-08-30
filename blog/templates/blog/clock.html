@@ -15,9 +15,11 @@
         <p>- Stop 버튼을 누르면 알람이 정지됩니다.</p>
         <p>- 체크박스로 알람을 끄고 켤 수 있습니다.</p>
         <h4>어려웠던 점 :</h4>
-        <p>d</p>
+        <p>설정한 알람시간을 알람침으로 보이게 하기.</p>
         <h4>극복 과정 :</h4>
-        <p>d</p>
+        <p>LocalStorage에 저장된 알람시간 ("00시 00분")을 replace, slice 메서드를 사용하여 '시'와 '분'을 없앤
+            ('00 '), ('00 ') 두개의 문자열로 나눴습니다.<br> Number 함수를 사용하여 문자열을
+         숫자로 바꿔줍니다. 이 두개 숫자로 drawTime 함수를 사용하여 알람침을 만들었습니다.</p>
     </div>
     <button class="btn" onclick="location.href='http://127.0.0.1:8000'">Home</button>
     <div class='content'>

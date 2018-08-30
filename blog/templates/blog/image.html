@@ -14,21 +14,33 @@
 
 <body>
     <button class="btn" onclick="location.href='http://127.0.0.1:8000'">Home</button>
-    <div>
+    <div class="img">
         <img src="{% static 'image/배경화면.jpg' %}" alt="">
     </div>
     <a href="https://github.com/dlalstn604/Minsu/blob/master/blog/templates/blog/image.html">소스 보기</a>
-    <div>
+    <div class="img">
         <input type="file" id="getImg" accept="image/*">
-        <div class="img-zoom-container">
-            <div class='fir'>
+        <div class="img-zoom-container img">
+            <div class='fir img'>
                 <img id="myimage" src="" width="300" height="300">
-                <div id="myresult" class="img-zoom-result"></div>
+                <div id="myresult" class="img-zoom-result img"></div>
             </div>
             <img src="{% static 'image/오른쪽.jpg' %}" alt="" style="padding-left: 100px">
         </div>
     </div>
-    <div class="story">fsfdsd dfdsd dfdsd dfdsd dfdsd dfdsd dfdsd dfdsd dfdsd dfdsd dfdsd dfdsd d</div>
+    <div class="story">
+        <p>- 파일을 선택하여 이미지를 불러올 수 있습니다.</p>
+        <p>- 마우스 커서에 따라 랜즈가 이미지 위를 이동합니다.</p>
+        <p>- 랜즈 안의 이미지만큼을 확대하여 보여줍니다.</p>
+        <h4>어려웠던 점 :</h4>
+        <p>마우스 커서에 따라 이미지 안에서 움직이는 랜즈 만들기.</p>
+        <h4>극복 과정 :</h4>
+        <p>
+            랜즈를 div로 만들어 마우스 커서에 따라 이미지의 좌표값을 받아서 움직이는 랜즈를 만들었다. <br>
+            확대 하고싶은 이미지의 아이디값을 가져와 insertBefore 메서드를 사용하여 랜즈를 이미지에 넣었다.
+
+        </p>
+    </div>
 
 
     <script>
@@ -70,7 +82,6 @@
 
             function moveLens(e) {
                 var pos, x, y;
-                e.preventDefault();
                 pos = point(e);
 
                 x = pos.x - (lens.offsetWidth / 2);
