@@ -9,6 +9,17 @@
     <title>Clock</title>
 </head>
 <body>
+    <div class="story">
+        <p>- 알람시간을 설정하면 알람시간이 저장됩니다.</p>
+        <p>- 알람시간과 현재시간이 같으면 알람이 울립니다.</p>
+        <p>- Stop 버튼을 누르면 알람이 정지됩니다.</p>
+        <p>- 체크박스로 알람을 끄고 켤 수 있습니다.</p>
+        <h4>어려웠던 점 :</h4>
+        <p>d</p>
+        <h4>극복 과정 :</h4>
+        <p>d</p>
+    </div>
+    <button class="btn" onclick="location.href='http://127.0.0.1:8000'">Home</button>
     <div class='content'>
         <canvas id="canvas" width="400" height="400" style="background-color:#ffffff"></canvas>
         <br>
@@ -26,7 +37,6 @@
             <br>
             <a href="https://github.com/dlalstn604/Minsu/blob/master/blog/templates/blog/clock.html">소스 보기</a>
         </div>
-
     </div>
     <script>
         var canvas = document.getElementById("canvas");
@@ -36,7 +46,7 @@
         ctx.translate(radius, radius); //radius, radius 만큼 중심점을 옮긴다.
         radius = radius * 0.90;
         setInterval(drawClock, 1000);
-        setInterval(alarm, 2000);
+        setInterval(alarm, 1000);
 
         function drawClock() {
             drawFace(ctx, radius);
@@ -62,7 +72,7 @@
                 if (localStorage.save) {
                     localStorage.save = num1.value + '시 ' + num2.value + '분';
                 } else {
-                    localStorage.save = 1
+                    localStorage.on = 1
                 }
             }
             document.getElementById("result").innerHTML =
@@ -71,7 +81,18 @@
         document.getElementById("result").innerHTML =
             '알람이 ' + localStorage.save + '에 울립니다.';
 
-
+        var check = document.getElementById('check');
+        check.addEventListener('click', function() {
+            if (typeof (Storage) !== "undefined") {
+                 if (localStorage.on) {
+                    localStorage.on = check.value
+                } else {
+                    localStorage.on = 1
+                }
+            }
+                document.getElementById("check").value = localStorage.on;
+        })
+            document.getElementById("check").value = localStorage.on;
         //stop을 누르면 1분동안 on1의 값이 off로 바뀌며 리턴;
         //localStorage에 저장된 값을 가져와서 현재 시간과 비교
 
@@ -86,7 +107,6 @@
                 } else {
                     mySound.stop();
                 }
-
             }
             var click = document.getElementById('stop');
             click.addEventListener('click', function () {
