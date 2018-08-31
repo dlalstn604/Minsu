@@ -48,8 +48,10 @@
 
         var myGamePiece;
         var myObstacles = [];
+        var myEnemy2 = [];
         var hidden = [];
         var missile = [];
+        var missile2 = [];
         var myMissile = [];
         var myScore;
 
@@ -58,8 +60,7 @@
         }
 
         function startGame() {
-            myGamePiece = new component(55, 75, ship, 210, 715, "image");
-            myEnemy = new enemy(100, 55, enemy2, 220, 50, "image");
+            myGamePiece = new component(35, 55, ship, 210, 715, "image");
             myBackground = new component(450, 2800, space, 0, -2090, "background");
             myScore = new component("30px", "Consolas", "white", 150, 40, "text");
             myGameArea.start();
@@ -220,7 +221,7 @@
 
         }
 
-        function enemy(width, height, color, x, y, type) {
+        function enemy(width, height, color, x, y, type, energy) {
             this.type = type;
             if (type == "image") {
                 this.image = new Image();
@@ -230,7 +231,9 @@
             this.height = height;
             this.x = x;
             this.y = y;
-            this.dirX = 2;
+            this.dirX = 1;
+            this.dirY = 1;
+            this.energy = energy;
             this.update = function () {
                 ctx = myGameArea.context;
                 if (type == "image") {
@@ -242,10 +245,19 @@
                     ctx.fillStyle = color;
                     ctx.fillRect(this.x, this.y, this.width, this.height);
                 }
-                if (this.x >= myGameArea.canvas.width - this.width || this.x <= 0) {
+                if (this.type == "image") {
+                    if (this.y < 0) {
+                        this.y += 1;
+                    }
+                }
+                if (this.x >= myGameArea.canvas.width + 30 - this.width || this.x <= -30) {
                     this.dirX *= -1;
                 }
+                if (this.y >= 100 || this.y <= 0) {
+                    this.dirY *= -1;
+                }
                 this.x += this.dirX;
+                this.y += this.dirY;
             }
         }
 
@@ -273,10 +285,6 @@
                     ctx.fillRect(this.x, this.y, this.width, this.height);
                 }
             }
-            this.newPos = function () {
-                this.y += this.speedY;
-                this.X += this.speedX;
-            }
         }
 
 
@@ -289,20 +297,20 @@
 
             function shoot() {
                 if (myGameArea.frameNo % 5 == 1) {
-                    myMissile.push(new component(5, 20, "#4DF051", myGamePiece.x + 27, myGamePiece.y));
+                    myMissile.push(new component(5, 20, "#4DF051", myGamePiece.x + 17, myGamePiece.y));
                 }
             }
 
             if (myGameArea.left) {
                 myGamePiece.x -= 5;
-                if (myGamePiece.x < -20) {
-                    myGamePiece.x = -20;
+                if (myGamePiece.x < -10) {
+                    myGamePiece.x = -10;
                 }
             }
             if (myGameArea.right) {
                 myGamePiece.x += 5;
-                if (myGamePiece.x + myGamePiece.width > myGameArea.canvas.width + 20) {
-                    myGamePiece.x = 415;
+                if (myGamePiece.x + myGamePiece.width > myGameArea.canvas.width + 5) {
+                    myGamePiece.x = 425;
                 }
             }
 
@@ -311,7 +319,6 @@
             myBackground.update();
             myGamePiece.update();
             myGamePiece.newPos();
-            myEnemy.update();
             myScore.text = "SCORE: " + myGameArea.frameNo;
             myGameArea.frameNo += 1;
 
@@ -325,11 +332,30 @@
                 }, 10000)
             }
 
-            if (myGameArea.frameNo % 10000 == 1) {
+            if (myGameArea.frameNo == 1 || everyinterval(10000)) {
                 setInterval(function () {
+                    myEnemy2.push(new enemy(100, 55, enemy2, Math.random() * 350, -80, "image", 10));
+                }, 10000)
+            }
 
-                    missile.push(new enemyMissile(5, 20, "red", myEnemy.x + 50, myEnemy.y + 30));
-                }, 1500)
+            for (i = 0; i < myEnemy2.length; i += 1) {
+                myEnemy2[i].update();
+                if (myGameArea.frameNo % 60 == 1) {
+                    missile.push(new enemyMissile(5, 20, "red", myEnemy2[i].x + 50, myEnemy2[i].y + 30));
+                    missile2.push(new enemyMissile(5, 20, "red", myEnemy2[i].x + 50, myEnemy2[i].y + 30));
+                }
+
+            }
+
+            for (i = 0; i < missile.length; i += 1) {
+                missile[i].y += 3;
+                missile[i].update();
+            }
+
+            for (x = 0; x < missile2.length; x += 1) {
+                missile2[x].y += 3;
+                missile2[x].x -= 1
+                missile2[x].update();
             }
 
 
@@ -344,39 +370,51 @@
                 hidden[i].update();
             }
 
-
-            for (i = 0; i < missile.length; i += 1) {
-                missile[i].y += 5;
-                missile[i].update();
-                missile[i].newPos();
-            }
-
             myScore.update();
-
-
 
             for (i = 0; i < myMissile.length; i += 1) {
                 myMissile[i].y -= 7;
                 myMissile[i].update();
+                try {
                 for (x = 0; x < myObstacles.length; x += 1) {
                     if (myMissile[i].crashWith(myObstacles[x])) {
                         myObstacles.splice(myObstacles.indexOf(myObstacles[x]), 1);
                         myMissile.splice(myMissile.indexOf(myMissile[i]), 1);
                         myGameArea.frameNo += 100;
-
                     }
                 }
-                for (x = 0; x < hidden.length; x += 1) {
-                    if (myMissile[i].crashWith(hidden[x])) {
-                        hidden.splice(hidden.indexOf(hidden[x]), 1);
-                        myMissile.splice(myMissile.indexOf(myMissile[i]), 2);
-                        myGameArea.frameNo += 1000;
+                for (y = 0; y < myEnemy2.length; y += 1) {
+                    if (myMissile[i].crashWith(myEnemy2[y])) {
+                        myEnemy2[y].energy -= 1;
+                        myMissile.splice(myMissile.indexOf(myMissile[i]), 1);
+                        if(myEnemy2[y].energy == 0) {
+                            myEnemy2.splice(myEnemy2.indexOf(myEnemy2[y]), 1);
+                            myGameArea.frameNo += 1000;
+                        }
                     }
+                }
+                for (z = 0; z < hidden.length; z += 1) {
+                    if (myMissile[i].crashWith(hidden[z])) {
+                        hidden.splice(hidden.indexOf(hidden[z]), 1);
+                        myMissile.splice(myMissile.indexOf(myMissile[i]), 1);
+                        myGameArea.frameNo += 1000;
+                        }
+                    }
+                }
+                catch(err) {
+                    return;
                 }
             }
 
             for (i = 0; i < missile.length; i += 1) {
                 if (myGamePiece.crashWith(missile[i])) {
+                    myGameArea.stop();
+                    alert('GAME OVER\n당신의 점수는 ' + myGameArea.frameNo + '점 입니다.');
+                }
+            }
+
+            for (i = 0; i < missile2.length; i += 1) {
+                if (myGamePiece.crashWith(missile2[i])) {
                     myGameArea.stop();
                     alert('GAME OVER\n당신의 점수는 ' + myGameArea.frameNo + '점 입니다.');
                 }
@@ -393,16 +431,10 @@
             setInterval(function () {
                 for (i = 0; i < myObstacles.length; i += 1) {
                     myObstacles[i].speedX += 0.05;
-                    myObstacles[i].speedY += 0.03;
+                    myObstacles[i].speedY += 0.01;
                 }
             }, 10000)
 
-            setInterval(function () {
-                for (i = 0; i < missile.length; i += 1) {
-                    missile[i].speedY += 0.02;
-                    missile[i].update();
-                }
-            }, 15000)
         }
 
         function everyinterval(n) {
