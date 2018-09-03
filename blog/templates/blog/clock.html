@@ -49,7 +49,8 @@
         var ctx = canvas.getContext("2d");
         var radius = canvas.height / 2;
         var mySound = new sound("https://www.w3schools.com/graphics/gametheme.mp3");
-        ctx.translate(radius, radius); //radius, radius 만큼 중심점을 옮긴다.
+        ctx.translate(radius, radius);
+        //radius, radius 만큼 중심점을 옮긴다.
         radius = radius * 0.90;
         setInterval(drawClock, 1000);
         setInterval(alarm, 1000);
@@ -78,7 +79,7 @@
         document.getElementById("result").innerHTML =
             '알람이 ' + localStorage.save + '에 울립니다.';
 
-        //로컬저장소에 체크박스 저장
+        //로컬저장소에 체크박스 값을 저장
         var check = document.getElementById('check');
         check.addEventListener('click', function() {
             if (typeof (Storage) !== "undefined") {
@@ -127,7 +128,7 @@
             ctx.font = radius * 0.15 + "px arial";
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
-            //원에서 숫자를 적는 반복문
+            //원안에서 각도를 이용하여 숫자를 적는 반복문
             for (num = 1; num < 13; num++) {
                 ang = num * Math.PI / 6;
                 ctx.rotate(ang);
